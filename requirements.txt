@@ -1,0 +1,8 @@
+environ
+Django
+psycopg2
+django-environ
+django-bootstrap4
+requests
+
+

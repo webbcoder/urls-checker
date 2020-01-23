@@ -1,0 +1,36 @@
+{% extends 'checker/index.html' %}
+{% block content %}
+<div class="card-header">
+    <h1>Create new checker list</h1>
+</div>
+<div class="card-body">
+<form action="{% url 'checker:checker_create_url' %}" method="post">
+    {% csrf_token %}
+    <table class="table table-borderless table-dark">
+        <thead>
+            <tr>
+              <th scope="col">Author</th>
+              <th scope="col">Links</th>
+              <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for field in form %}
+                    <td>{{ field }}</td>
+                {% endfor %}
+                <td>
+                    <div class="form-group">
+                        <a href="{% url 'checker:link_create_url' %}" class="btn btn-primary">Add link</a>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" type="submit">Create</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+</div>
+
+{% endblock %}

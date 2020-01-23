@@ -1,0 +1,22 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>Checker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    {% bootstrap_javascript  %}
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    {% include "checker/includes/ajax_template.html" %}
+</body>
+</html>

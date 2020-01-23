@@ -1,0 +1,94 @@
+<script type="text/javascript">
+    $(function() {
+        let interval = null;
+        $('form .btn').on('click', function (e) {
+            clearInterval(interval);
+            let $start = $(this).data('start');
+            let $stop = $(this).data('stop');
+            let watch = false;
+            if($start) watch = true;
+            let $form = $(this).closest('form');
+            let form_id = '#' + $form.attr('id');
+            let $inputs = $(form_id + ' input[type="checkbox"]');
+            let $select = $(form_id + ' select[name="interval"]');
+            let time = parseInt($select.children("option:selected").val());
+            if($stop) checkAll($inputs);
+            let links = getDataLinks($inputs, watch);
+            let data = {
+                form_id: form_id,
+                links: JSON.stringify(links),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                dataType: 'json'
+            };
+            if (links.length){
+                interval = setInterval(()=> {
+                    ajaxReq(data)
+                }, time);
+            }
+            if($stop){
+                let stopTime = time + 2000;
+                setTimeout(()=>{
+                    clearInterval(interval);
+                }, stopTime)
+            }
+
+        })
+    });
+
+function checker(links) {
+    let classes = ['green', 'red'];
+    for (let link of links){
+        let watch = link['watch'];
+        let $label = $('#'+link['id']).next();
+        if(watch){
+            if(link['status'] && link['status'] === '200'){
+                $label.addClass(classes[0])
+            }else {
+                $label.addClass(classes[1])
+            }
+        }else {
+            classes.map(c => {
+                if($label.hasClass(c)) $label.removeClass(c);
+            })
+        }
+    }
+}
+function ajaxReq(data) {
+    $.ajax({
+        async: true,
+        type: 'POST',
+        url:'{% url "checker:checker_page_url" %}',
+        data: data,
+        success:function(response){
+            if(response['links'].length){
+                checker(response['links'])
+            }else {
+
+            }
+        },
+        error : function(err) {
+            console.log(err)
+        }
+    })
+}
+function getDataLinks($inputs, watch) {
+    let links = [];
+    for (let input of $inputs){
+        if($(input).is(":checked")){
+            links.push({
+                id: $(input).attr('id'),
+                name: $(input).attr('name'),
+                url: $(input).attr('value'),
+                watch: watch
+            });
+            $(input).prop('checked', false)
+        }
+    }
+    return links
+}
+function checkAll($inputs) {
+    for (let input of $inputs){
+        $(input).prop('checked', true)
+    }
+}
+</script>
