@@ -73,4 +73,5 @@ class LinkCreate(LoginRequiredMixin, ObjectCreateMixin,  View):
         if bound_form.is_valid():
             new_tag = bound_form.save()
             self.redirect_url = request.GET.get('redirect')
-        return HttpResponseRedirect(self.redirect_url)
+            return HttpResponseRedirect(self.redirect_url)
+        return render(request, self.template, context={'form': bound_form})
